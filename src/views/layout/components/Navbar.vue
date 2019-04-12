@@ -4,7 +4,9 @@
     <breadcrumb />
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+        <!-- 注意引入图片的路径，用@ -->
+        <img src="@/assets/test.gif" class="user-avatar">
+        <!-- <svg-icon icon-class="peoples" /> -->
         <i class="el-icon-caret-bottom"/>
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -92,4 +94,3 @@ export default {
   }
 }
 </style>
-

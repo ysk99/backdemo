@@ -51,6 +51,18 @@ export const constantRouterMap = [
         meta: { title: 'Table', icon: 'table' }
       },
       {
+        path: 'edittable',
+        name: 'EditTable',
+        component: () => import('@/views/table/edittable'),
+        meta: { title: 'EditTable', icon: 'documentation' }
+      },
+      {
+        path: 'usetable',
+        name: 'UseTable',
+        component: () => import('@/views/table/usetable'),
+        meta: { title: 'UseTable', icon: 'excel' }
+      },
+      {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
@@ -67,11 +79,46 @@ export const constantRouterMap = [
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        meta: { title: '录入', icon: 'form' }
       }
     ]
   },
-
+  {
+    path: '/linklist',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Linklist',
+        component: () => import('@/views/form/linklist'),
+        meta: { title: '网站列表', icon: 'excel' }
+      }
+    ]
+  },
+  {
+    path: '/UploadExcel',
+    component: Layout,
+    children: [
+      {
+        path: 'uploadExcel',
+        name: 'UploadExcel',
+        component: () => import('@/views/excel/uploadExcel'),
+        meta: { title: 'UploadExcel', icon: 'excel' }
+      }
+    ]
+  },
+  {
+    path: '/Eo',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Eo',
+        component: () => import('@/views/eo/index'),
+        meta: { title: 'Eo', icon: 'excel' }
+      }
+    ]
+  },
   {
     path: '/nested',
     component: Layout,

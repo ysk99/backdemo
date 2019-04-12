@@ -27,12 +27,16 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+      const email = userInfo.email.trim()
+      // const password = userInfo.password.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
+        login(email, userInfo.password).then(response => {
+          const data = response.data.data
+          console.log(response.data)
+          setToken(data.api_token)
+          commit('SET_NAME', data.email)
+          commit('SET_TOKEN', data.api_token)
+          commit('SET_ROLES', data.roles)
           resolve()
         }).catch(error => {
           reject(error)
@@ -50,7 +54,7 @@ const user = {
           } else {
             reject('getInfo: roles must be a non-null array !')
           }
-          commit('SET_NAME', data.name)
+          commit('SET_NAME', data.email)
           commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {
@@ -62,10 +66,12 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout(state.token).then(response => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
+          console.log(response)
+          console.log('后端退出')
           resolve()
         }).catch(error => {
           reject(error)

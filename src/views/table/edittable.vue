@@ -18,23 +18,13 @@
           {{ scope.row.title }}
         </template>
       </el-table-column>
-      <!-- <el-table-column label="Author" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column min-width="300px" label="Title">
-        <template slot-scope="scope">
-          <template v-if="scope.row.edit">
-            <el-input v-model="scope.row.title" class="edit-input" size="small"/>
-            <el-button class="cancel-btn" size="small" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">cancel</el-button>
-          </template>
-          <span v-else>{{ scope.row.title }}</span>
-        </template>
-      </el-table-column> -->
       <el-table-column label="Body">
         <template slot-scope="scope">
-          {{ scope.row.body }}
+          <template v-if="scope.row.edit">
+            <el-input v-model="scope.row.body" class="edit-input" size="small"/>
+            <el-button class="cancel-btn" size="small" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">cancel</el-button>
+          </template>
+          <span v-else>{{ scope.row.body }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column class-name="status-col" label="Status" width="110" align="center">
@@ -48,16 +38,18 @@
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="Actions" width="120">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">Ok</el-button>
+          <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">Edit</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="fetchData" />
-
   </div>
 </template>
 
 <script>
-import { getListPagination } from '@/api/table'
-import Pagination from '@/components/Pagination'
+import { getList, updateArticles } from '@/api/table'
 
 export default {
   filters: {
@@ -70,20 +62,11 @@ export default {
       return statusMap[status]
     }
   },
-  // ****这个问题很严重，必须进行声明，否则无法渲染
-  components: {
-    'pagination': Pagination
-  },
   data() {
     return {
       list: null,
-      listLoading: true,
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        title: undefined
-      }
+      listLoading: true
+
     }
   },
   created() {
@@ -92,18 +75,31 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      // 访问后端分页只需携带page=页数就行，具体查看后端格式要求
-      getListPagination(this.listQuery.page, this.listQuery.limit).then(response => {
-        this.list = response.data.data
-        // this.list = response.data.items
-        this.total = response.data.total
+      getList(this.listQuery).then(response => {
+        this.list = response.data
         console.log(response.data)
-        console.log(this.total)
-        // this.listLoading = false
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
+      })
+    },
+    cancelEdit(row) {
+      // row.body = row.body
+      row.edit = false
+      this.$message({
+        message: 'The title has been restored to the original value' + row.id,
+        type: 'warning'
+      })
+    },
+    confirmEdit(row) {
+      row.edit = false
+      // row.originalTitle = row.title
+      console.log(row)
+      updateArticles(row).then(response => {
+        console.log('xiugaichengg')
+        console.log(response)
+      })
+      this.$message({
+        message: 'The title has been edited' + row.body + row.originalTitle,
+        type: 'success'
       })
     }
   }
